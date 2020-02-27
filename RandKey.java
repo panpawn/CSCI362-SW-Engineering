@@ -7,13 +7,17 @@ import java.util.Arrays;
 public class RandKey {
 	private String account;
 	private String company;
-	public String firstName;
-	public String lastName;
-	public String address1;
-	public String address2;
-	public String city;
-	public String state;
-	public String zip;
+	private String firstName;
+	private String lastName;
+	private String address1;
+	private String address2;
+	private String city;
+	private String state;
+	private String zip;
+	private String randomKey;
+	private int randomKeyLength = 24;
+
+	private String possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	public RandKey(String account, String company, String firstName, String lastName, String address1, String address2, String city, String state, String zip) {
 		this.account = account;
@@ -25,13 +29,20 @@ public class RandKey {
 		this.city = city;
 		this.state = state;
 		this.zip = zip;
+		this.randomKey = this.genKey(this.randomKeyLength);
 	}
-	private String genKey() {
-		return "KEY HERE";
+	private String genKey(int length) {
+		String buffer = "";
+		for (int i = 0; i < length; i++) {
+			int character = (int)(Math.random() * this.possibleChars.length());
+			buffer += possibleChars.charAt(character);
+		}
+		this.randomKey = buffer;
+		return buffer;
 	}
+
 	public String toString() {
-		return account + " | " + company + " | " + firstName + " | " + lastName + " | " + address1 + " | " + address2 + " | " + city + " | " + state + " | " + zip + "\n" +
-				this.genKey();
+		return account + " | " + company + " | " + firstName + " | " + lastName + " | " + address1 + " | " + address2 + " | " + city + " | " + state + " | " + zip + " | " + randomKey;
 	}
 	// toString method?
 
