@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class RandKey {
+public class RandKey {  //class that initializes the various characteristics of the object
 	private String account;
 	private String company;
 	private String firstName;
@@ -17,9 +17,9 @@ public class RandKey {
 	private String randomKey;
 	private int randomKeyLength = 24;
 
-	private String possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	private String possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //a list of characters the key can be made from
 
-	public RandKey(String account, String company, String firstName, String lastName, String address1, String address2, String city, String state, String zip) {
+	public RandKey(String account, String company, String firstName, String lastName, String address1, String address2, String city, String state, String zip) {//class that takes inputs and assigns them to the characteristics of the object
 		this.account = account;
 		this.company = company;
 		this.firstName = firstName;
@@ -31,7 +31,7 @@ public class RandKey {
 		this.zip = zip;
 		this.randomKey = this.genKey(this.randomKeyLength);
 	}
-	private String genKey(int length) {
+	private String genKey(int length) {//a private class that is used to generate a key to be assigned to an object
 		String buffer = "";
 		for (int i = 0; i < length; i++) {
 			int character = (int)(Math.random() * this.possibleChars.length());
@@ -41,16 +41,16 @@ public class RandKey {
 		return buffer;
 	}
 
-	public String toString() {
+	public String toString() {//returns the object as a string
 		return account + " | " + company + " | " + firstName + " | " + lastName + " | " + address1 + " | " + address2 + " | " + city + " | " + state + " | " + zip + " | " + randomKey;
 	}
 	// toString method?
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {//main method
 		String line = "";
 		String seperator = ",";
 		BufferedReader br = null;
-		try {
+		try {//try, to create the object and then print it
 			// try-catch is wanted he said
 			br = new BufferedReader((new FileReader("customers.csv")));
 			while ((line = br.readLine()) != null) {
@@ -70,12 +70,12 @@ public class RandKey {
 
 				System.out.println(entry);
 			}
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {//if file not found
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (IOException e) {//if an exception passes
 			e.printStackTrace();
 		} finally {
-			if (br != null) {
+			if (br != null) {//used to close out the bufferedReader
 				try {
 					br.close();
 				} catch (IOException e) {
