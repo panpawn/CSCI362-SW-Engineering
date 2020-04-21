@@ -1,10 +1,21 @@
+/*
+ * RandKey - a class dedicated to
+ * 1. generating a random transaction ID for an order
+ * 2. a method to fetch the transaction ID given an
+ * account number
+ */
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class RandKey {  //class that initializes the various characteristics of the object
+// RandKey - a class that can be instantiated that includes the aspects of a transaction,
+// where it also will assign a random transaction ID.
+public class RandKey {
 	private String account;
 	private String company;
 	private String firstName;
@@ -17,9 +28,10 @@ public class RandKey {  //class that initializes the various characteristics of 
 	private String randomKey;
 	private int randomKeyLength = 24;
 
-	private String possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //a list of characters the key can be made from
+	// All possible characters that could be included in a random transaction ID
+	private String possibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	public RandKey(String account, String company, String firstName, String lastName, String address1, String address2, String city, String state, String zip) {//class that takes inputs and assigns them to the characteristics of the object
+	public RandKey(String account, String company, String firstName, String lastName, String address1, String address2, String city, String state, String zip) {
 		this.account = account;
 		this.company = company;
 		this.firstName = firstName;
@@ -31,30 +43,54 @@ public class RandKey {  //class that initializes the various characteristics of 
 		this.zip = zip;
 		this.randomKey = this.genKey(this.randomKeyLength);
 	}
-	private String genKey(int length) {//a private class that is used to generate a key to be assigned to an object
+	// In here, we will generate the transaction ID
+	private String genKey(int length) {
 		String buffer = "";
 		for (int i = 0; i < length; i++) {
 			int character = (int)(Math.random() * this.possibleChars.length());
 			buffer += possibleChars.charAt(character);
 		}
-		this.randomKey = buffer;
 		return buffer;
 	}
+	public String getAccount() {
+		return this.account;
+	}
+	public String getTransID() {
+		return this.randomKey;
+	}
 
-	public String toString() {//returns the object as a string
+	// We override toString here to better show the aspects of each transaction
+	// and its random transaction ID
+	public String toString() {
 		return account + " | " + company + " | " + firstName + " | " + lastName + " | " + address1 + " | " + address2 + " | " + city + " | " + state + " | " + zip + " | " + randomKey;
 	}
-	// toString method?
 
-	public static void main(String[] args) {//main method
+	// findTransactionId - this is the second required method that will
+	// fetch the transaction ID given an account number and the array of
+	// RandKey objects.
+	public static void fetchTransID(String accountNumber, RandKey[] transactions) {
+		System.out.println("Searching for transaction ID for account number: " + accountNumber + "...");
+		String results = "(None)";
+		for (int i = 0; i < transactions.length; i++) {
+			if (transactions[i].getAccount().equals(accountNumber)) results = transactions[i].getTransID();
+		}
+		System.out.println("Transaction ID found: " + results);
+	}
+
+	public static void main(String[] args) {
 		String line = "";
-		String seperator = ",";
+		String separator = ",";
 		BufferedReader br = null;
-		try {//try, to create the object and then print it
-			// try-catch is wanted he said
-			br = new BufferedReader((new FileReader("customers.csv")));
+		try {
+			br = new BufferedReader((new FileReader("src/customers.csv")));
+			Path path = Paths.get("./src/customers.csv");
+			long lineCount = Files.lines(path).count();
+			RandKey[] transactions = new RandKey[(int)lineCount];
+			//System.out.println("Total lines: " + lineCount);
+			int counter = 0;
 			while ((line = br.readLine()) != null) {
-				String[] data = line.split(seperator, -1);
+
+				String[] data = line.split(separator, -1);
 
 				String account = (data[0].length() != 0 ? data[0].trim() : "N/A");
 				String company = (data[1].length() != 0 ? data[1].trim() : "N/A");
@@ -67,15 +103,24 @@ public class RandKey {  //class that initializes the various characteristics of 
 				String zip = (data[8].length() != 0 ? data[8].trim() : "N/A");
 
 				RandKey entry = new RandKey(account, company, firstName, lastName, address1, address2, city, state, zip);
-
+				transactions[counter++] = entry;
 				System.out.println(entry);
 			}
-		} catch (FileNotFoundException e) {//if file not found
+
+			System.out.println("\n\n");
+
+			// give transaction ID given account number:
+			fetchTransID("3897532874ceadc89c21d2", transactions);
+			fetchTransID("13078069694beb11d285a3e", transactions);
+			fetchTransID("15586517244b59d42faad04", transactions);
+			// finally, fetching a non-existent account number
+			fetchTransID("13078069694beb11d285a32", transactions);
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) {//if an exception passes
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (br != null) {//used to close out the bufferedReader
+			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
@@ -83,6 +128,5 @@ public class RandKey {  //class that initializes the various characteristics of 
 				}
 			}
 		}
-		// for loop read file process
 	}
 }
