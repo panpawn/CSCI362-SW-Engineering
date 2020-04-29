@@ -82,8 +82,8 @@ public class RandKey {
 		String separator = ",";
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader((new FileReader("src/customers.csv")));
-			Path path = Paths.get("./src/customers.csv");
+			br = new BufferedReader((new FileReader("./customers.csv")));
+			Path path = Paths.get("./customers.csv");
 			long lineCount = Files.lines(path).count();
 			RandKey[] transactions = new RandKey[(int)lineCount];
 			//System.out.println("Total lines: " + lineCount);
